@@ -29,7 +29,7 @@ const reducer = (state = initState, { type, payload }) => {
         case GET_TOKEN_SUCCESS:
             return {
                 ...state,
-                token: payload.data.token
+                token: payload.data
             }
         case FIND_RESPONSE_FAILURE:
             return {

@@ -39,11 +39,14 @@ export const findResponseFailure = (payload) => ({
 })
 
 export const getToken = () => dispatch => {
-    console.log("Here")
+    const config = {
+        headers: {
+            Accept: 'application/json'
+        }
+    };
     dispatch(getTokenRequest());
-    return axios.post("https://findfalcone.herokuapp.com/token",{})
+    return axios.post("https://findfalcone.herokuapp.com/token", null, config)
         .then(res => {
-            console.log(res)
             if (res.status === 200) {
                 return dispatch(getTokenSuccess({ token: res.data }))
             }
@@ -54,9 +57,15 @@ export const getToken = () => dispatch => {
 }
 
 export const findResponse = (data) => dispatch => {
+    const config = {
+        headers: {
+            Accept: 'application/json'
+        }
+    };
     dispatch(findResponseRequest());
-    return axios.post("https://findfalcone.herokuapp.com/find", data)
+    return axios.post("https://findfalcone.herokuapp.com/find", data, config)
         .then(res => {
+            console.log(res)
             if (res.status === 200) {
                 return dispatch(findResponseSuccess({ response: res.data }))
             }

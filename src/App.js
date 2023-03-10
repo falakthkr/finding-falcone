@@ -11,6 +11,9 @@ const App = () => {
   const [planets, setPlanets] = useState([])
   const [vehicles, setVehicles] = useState([])
   const [token, setToken] = useState('')
+  const [response, setResponse] = useState(null)
+  const payloadPlanets = []
+  const payloadVehicles = []
 
   const getPlanetsData = () => {
     dispatch(getPlanetsDetails()).then((res) => {
@@ -25,7 +28,27 @@ const App = () => {
   }
 
   const handleSubmit = () => {
-    dispatch(getToken());
+    dispatch(getToken()).then((res) => {
+      setToken(res.payload.token.token)
+      getFalconeResponse(res.payload.token.token);
+    })
+  }
+
+  const getFalconeResponse = (tokenData) => {
+    const data = {
+      token: tokenData,
+      planet_names: payloadPlanets,
+      vehicle_names: payloadVehicles
+    }
+    dispatch(findResponse(data)).then((res) => {
+      setResponse(res)
+      if (res.status == "success") {
+        alert(`Falcone was found on planet ${res.planet_name}`)
+      }
+      else{
+        alert("Mission Failed")
+      }
+    })
   }
 
   useEffect(() => {
@@ -39,10 +62,10 @@ const App = () => {
         {[0, 1, 2, 3].map((item) => {
           return (
             <div key={item} style={{ display: 'flex', flexDirection: 'column' }}>
-              <select>
+              <select onChange={(e) => payloadPlanets.push(e.target.value)}>
                 {planets.map((item) => {
                   return (
-                    <option key={item.name}>{item.name}</option>
+                    <option key={item.name} value={item.name}>{item.name}</option>
                   )
                 })}
               </select>
@@ -50,7 +73,7 @@ const App = () => {
                 {vehicles.map((item) => {
                   return (
                     <>
-                      <input type="radio" id={item.speed} name="vehicle" value={item.name} />
+                      <input onClick={() => payloadVehicles.push(item.name)} type="radio" id={item.name} name="vehicle" value={item.name} />
                       <label>{item.name}</label> <br />
                     </>
                   )
